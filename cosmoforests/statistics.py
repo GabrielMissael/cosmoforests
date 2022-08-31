@@ -2,7 +2,7 @@
 
 import numpy as np # Array manipulation
 
-def get_statistics(fluxes):
+def get_statistics(fluxes, get_deltas = False):
     """Get statistics for the transmission files.
     
     Parameters
@@ -26,7 +26,10 @@ def get_statistics(fluxes):
     # Get standard deviation for each wavelength bin
     std = np.std(fluxes, axis = 0)
 
-    # Compute the deltas
-    deltas = fluxes/mean - 1.0
+    if get_deltas:
+        # Compute the deltas
+        deltas = fluxes/mean - 1.0
 
-    return mean, std, deltas
+        return mean, std, deltas
+    
+    return mean, std
