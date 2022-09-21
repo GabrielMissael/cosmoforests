@@ -21,20 +21,28 @@ def get_statistics(fluxes, get_deltas = False):
     deltas: numpy.ndarray
         The deltas of the fluxes.
     """
+    # Mask -2 values
+    masked = np.ma.masked_equal(fluxes, -2.0)
 
     # Get mean for each wavelength bin
-    mean = np.mean(fluxes, axis = 0)
+    mean = np.mean(masked, axis = 0)
 
     # Get standard deviation for each wavelength bin
-    std = np.std(fluxes, axis = 0)
+    std = np.std(masked, axis = 0)
+
+    # Number of elements in each wavelength bin
+    n = np.sum(masked.mask == False, axis = 0)
 
     if get_deltas:
+        # Replace -2 with 1
+        fluxes = np.where(fluxes == -2.0, 1.0, fluxes)
+
         # Compute the deltas
         deltas = fluxes/mean - 1.0
 
-        return mean, std, deltas
+        return mean, std, n, deltas
     
-    return mean, std
+    return mean, std, n
 
 def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_min = 1420.0, lambda_max = 1520.0, verbose = False):
 
@@ -89,7 +97,7 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
         # Initialize arrays to store the statistics
         mean = np.zeros((n_files, n_bins))
         std = np.zeros((n_files, n_bins))
-        n_qso = np.zeros(n_files)
+        n_qso = np.zeros((n_files, n_bins))
 
         # Loop over the files
         i = 0
@@ -101,10 +109,7 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
             fluxes = mask_forest(z, wv, fluxes, lambda_min = lambda_min, lambda_max = lambda_max)
 
             # Get statistics for the transmission files.
-            mean[i], std[i] = get_statistics(fluxes, get_deltas = False)
-
-            # Number of QSOs in the file
-            n_qso[i] = len(z)
+            mean[i], std[i], n_qso[i] = get_statistics(fluxes, get_deltas = False)
 
             # Increment the counter
             i += 1
@@ -116,7 +121,7 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
         # Compute the overall mean
 
         total_mean = np.zeros(n_bins)
-        total_qsos = np.sum(n_qso)
+        total_qsos = np.sum(n_qso, axis = 0)
 
         for i in range(n_files):
             total_mean += mean[i] * n_qso[i]

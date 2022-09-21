@@ -43,7 +43,7 @@ def mask_forest(z, wv, fluxes, lambda_min = 1420.0, lambda_max = 1520.0):
         mask = (wv > lambda_min_obs[i]) & (wv < lambda_max_obs[i])
         new_fluxes[i] = flux
         # Makes 1 whatever isn't in the CIV forest
-        new_fluxes[i][~mask] = 1.0
+        new_fluxes[i][~mask] = -2.0
     
         #! TODO: Do we need to normalize the fluxes?
 
