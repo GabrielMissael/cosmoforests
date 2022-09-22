@@ -169,12 +169,6 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
             total_mean = data[:, 1]
             total_std = data[:, 2]
 
-            # Load the total number of QSOs from the txt file
-            try:
-                with open(save.split('.')[0] + 'n_qso.txt', 'r') as f:
-                    total_qsos = f.readline().split(': ')[1]
-                    total_qsos = int(total_qsos)
-            except:
-                raise ValueError('Txt file not found.')
+        n_files = len(fits_path)
 
-    return wv, total_mean, total_std, total_qsos, n_files
+    return wv, total_mean, total_std, n_files
