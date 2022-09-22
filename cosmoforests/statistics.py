@@ -166,7 +166,7 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
 
             # Load the total number of QSOs from the txt file
             try:
-                with open(save.split('.')[0] + 'n_qso.txt', 'r') as f:
+                with open(save.split('.')[0] + '_info.txt', 'r') as f:
                     total_qsos = f.readline().split(': ')[1]
                     total_qsos = int(total_qsos)
             except:
