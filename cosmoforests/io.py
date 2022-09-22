@@ -39,7 +39,7 @@ def get_docs_path(data_dir, verbose = True, search = '.fits'):
 
     return fits_path
 
-def get_qso_data(file_path, bin_size = None, verbose = False):
+def get_qso_data(file_path, bin_size = None, verbose = False, forest_type = 'F_METALS'):
     """
     Get the wavelength, flux and redshift data from a FITS file.
     
@@ -52,6 +52,9 @@ def get_qso_data(file_path, bin_size = None, verbose = False):
         Default is None (not changing the bin size).
     verbose : bool
         Whether to print shapes of the data. Default is False.
+    forest_type : str
+        The type of forest to mask to. Default is 'F_METALS' (CIV forest).
+        Options: 'F_LYA', 'F_LYB', 'F_METALS'
     
     Returns
     -------
@@ -68,7 +71,7 @@ def get_qso_data(file_path, bin_size = None, verbose = False):
 
     # Get wavelength and flux data
     wv = np.array(hdul['WAVELENGTH'].data)
-    fluxes = np.array(hdul['F_METALS'].data)
+    fluxes = np.array(hdul[forest_type].data)
     # Redshifts
     z = np.array(hdul['METADATA'].data['Z'])
 
