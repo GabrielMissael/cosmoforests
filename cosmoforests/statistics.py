@@ -44,7 +44,8 @@ def get_statistics(fluxes, get_deltas = False):
     
     return mean, std, n
 
-def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_min = 1420.0, lambda_max = 1520.0, verbose = False):
+def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_min = 1420.0,
+                 lambda_max = 1520.0, verbose = False, forest_type = 'F_METALS'):
 
     """Compute the general statistics for all the data files.
 
@@ -68,6 +69,9 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
         The maximum wavelength to mask to. Default is 1520.0 (CIV forest).
     verbose : bool
         Whether to print the progress. Default is False.
+    forest_type : str
+        The type of forest to mask to. Default is 'F_METALS' (CIV forest).
+        Options: 'F_LYA', 'F_LYB', 'F_METALS'
 
     Returns
     -------
@@ -103,7 +107,7 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
         i = 0
         for path in fits_path:
             # Get the data
-            z, wv, fluxes = get_qso_data(path, bin_size = bin_size, verbose = False)
+            z, wv, fluxes = get_qso_data(path, bin_size = bin_size, verbose = False,  forest_type = forest_type)
 
             # Mask the flux data to a given wavelength range. Default to CIV forest.
             fluxes = mask_forest(z, wv, fluxes, lambda_min = lambda_min, lambda_max = lambda_max)
