@@ -7,9 +7,11 @@ from astropy.io import fits
 import os
 
 def get_delta_path(fits_path, deltas_dir, data_dir):
-    delta_path = fits_path.replace(data_dir, deltas_dir)
+    delta_path = fits_path.replace(data_dir, '')
+    delta_path = delta_path.split('/')[-1]
     delta_path = delta_path.replace('transmission-16', 'delta').split('.')[0]
     delta_path += '.fits'
+    delta_path = os.path.join(deltas_dir, delta_path)
 
     return delta_path
 
