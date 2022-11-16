@@ -41,10 +41,10 @@ def delta_files_from_transmission(fits_path, deltas_dir, data_dir, total_mean, b
 
         deltas = fluxes[i]/total_mean -1
 
-        header = [{'name': 'RA',  'value': np.radians(hdul['METADATA'].data['RA'][0]), 'comment': 'Right Ascension [rad]'},
-            {'name': 'DEC', 'value': np.radians(hdul['METADATA'].data['DEC'][0]), 'comment': 'Declination [rad]'},
-            {'name': 'Z',   'value': hdul['METADATA'].data['Z'][0], 'comment': 'Redshift'},
-            {'name': 'TARGETID', 'value':i, 'comment': 'Target ID (fake)'},
+        header = [{'name': 'RA',  'value': np.radians(hdul['METADATA'].data['RA'][i]), 'comment': 'Right Ascension [rad]'},
+            {'name': 'DEC', 'value': np.radians(hdul['METADATA'].data['DEC'][i]), 'comment': 'Declination [rad]'},
+            {'name': 'Z',   'value': hdul['METADATA'].data['Z'][i], 'comment': 'Redshift'},
+            {'name': 'TARGETID', 'value':hdul['METADATA'].data['MOCKID'][i], 'comment': 'Target ID'},
             {'name': 'THING_ID', 'value':i, 'comment': 'Thing ID (fake)'},
             {'name': 'PLATE', 'value':i, 'comment': 'Plate (fake)'},
             {'name': 'MJD', 'value':i, 'comment': 'MJD (fake)'},
