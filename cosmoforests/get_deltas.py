@@ -51,9 +51,9 @@ def delta_files_from_transmission(fits_path, deltas_dir, data_dir, total_mean, b
             {'name': 'FIBERID', 'value':i, 'comment': 'fiberid (fake)'}]
 
         weigths = np.ones(np.shape(loglam[mask[i]]))
-        cols = [loglam[mask[i]], deltas[mask[i]], weigths]
-        names = ['LOGLAM', 'DELTA', 'WEIGHT']
-        units    = ['LogAngstrom', '', '']
+        cols = [loglam[mask[i]], deltas[mask[i]], weigths, weights]
+        names = ['LOGLAM', 'DELTA', 'WEIGHT', 'CONT']
+        units    = ['LogAngstrom', '', '', '']
 
         results.write(cols,
             names   = names,
