@@ -3,6 +3,8 @@
 import numpy as np # Array manipulation
 from cosmoforests.mask_forest import mask_forest
 from cosmoforests.io import get_qso_data
+import os
+import fitsio
 
 def get_statistics(fluxes, get_deltas = False):
     """Get statistics for the transmission files.
@@ -176,3 +178,38 @@ def general_stats(fits_path, bin_size = 0.8, save = None, load = False, lambda_m
         n_files = len(fits_path)
 
     return wv, total_mean, total_std, n_files
+
+def get_mean_std_file(std_mean_path, wv, total_mean, total_std):
+    # If the file already exists, delete it
+    if os.path.exists(std_mean_path):
+        os.remove(std_mean_path)
+
+    # Check if directory exists
+    if not os.path.exists(os.path.dirname(std_mean_path)):
+        os.makedirs(os.path.dirname(std_mean_path))
+
+    results = fitsio.FITS(std_mean_path, 'rw', clobber=True)
+    del_l = wv[1]-wv[0]
+
+    # Round to first decimal
+    del_l = round(del_l, 1)
+
+    header = [{'name':'L_MIN' ,'value':min(wv)},
+                {'name':'L_MAX','value':max(wv)},
+                {'name':'LR_MIN' ,'value':1040, 'comment':'Fake'},
+                {'name':'DEL_LL' ,'value':None, 'comment':'Fake'},
+                {'name':'DEL_L' ,'value':del_l},
+                {'name':'LINEAR' ,'value':'T', 'comment':'Fake'},
+                {'name': 'LR_MAX','value':1200.0, 'comment':'Fake'}]
+
+    weigths = np.ones(np.shape(wv))
+    cols = [wv, total_mean, weigths, np.sqrt(total_std), weigths]
+    names = ['LAMBDA', 'MEANFLUX', 'WEIGHTS', 'VAR', 'VARWEIGHTS']
+
+    results.write(cols,
+        names   = names,
+        header  = header,
+        extname  =  'STATS'
+        )
+
+    results.close()
